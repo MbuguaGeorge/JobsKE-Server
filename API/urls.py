@@ -6,6 +6,7 @@ from django.contrib.staticfiles.urls import static
 urlpatterns = [
     path('register', views.register, name=('register')),
     path('profile', views.create_profile, name=('profile')),
+    path('login', views.TokenView.as_view()),
 ]
 
 if settings.DEBUG:

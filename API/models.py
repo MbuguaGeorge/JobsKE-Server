@@ -14,6 +14,7 @@ class UserProfile(AbstractUser):
     email = models.EmailField(max_length=100)
     password = models.CharField(('password'), max_length=128, help_text=("use'[algo]$[salt]$[hexdigest]'"))
     created_on = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, null=True)
 
     class Meta:
         ordering = ['created_on']
