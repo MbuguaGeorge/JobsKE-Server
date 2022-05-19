@@ -1,4 +1,5 @@
 from lib2to3.pgen2.token import OP
+from unicodedata import category
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -7,6 +8,13 @@ from django.contrib.auth.models import AbstractUser
 OPTIONS = [
     ("WEB", "Website & Software"),
     ("UI", "UI/UX")
+]
+
+JOBTYPE = [
+    ("FT", "Full Time"),
+    ("PT", "Part Time"),
+    ("INTERN", "Internship"),
+    ("FREELANCE", "Freelance")
 ]
 
 class UserProfile(AbstractUser):
@@ -45,4 +53,14 @@ class Org_Profile_Creation(models.Model):
     description = models.TextField()
 
     def __str__(self) -> str:
-        return self.user_profile.username
+        return self.orgname
+
+class JobPost(models.Model):
+    orgname = models.ForeignKey(Org_Profile_Creation, on_delete = models.CASCADE)
+    type = models.CharField(choices=JOBTYPE, default="FT", max_length=100)
+    location = models.CharField(max_length=100)
+    category = models.CharField(choices=OPTIONS, default="WEB", max_length=100)
+    description = models.TextField()
+
+    def __str__(self) -> str:
+        return self.orgname
