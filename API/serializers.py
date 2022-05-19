@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserProfile, User_Profile_creation
+from .models import UserProfile, User_Profile_creation, Org_Profile_Creation
 
 class ProfileSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
@@ -46,3 +46,22 @@ class UserProfileCreationSerializer(serializers.ModelSerializer):
 
         profile.save()
         return profile
+
+class OrgProfileCreationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Org_Profile_Creation
+        fields = ('user_profile', 'firstname', 'lastname', 'contact', 'orgname', 'description', 'location')
+
+    def save(self):
+        org = Org_Profile_Creation(
+            user_profile = self.validated_data['user_profile'],
+            firstname = self.validated_data['firstname'],
+            lastname = self.validated_data['lastname'],
+            contact = self.validated_data['contact'],
+            orgname = self.validated_data['orgname'],
+            description = self.validated_data['description'],
+            location = self.validated_data['location']
+        )
+
+        org.save()
+        return org

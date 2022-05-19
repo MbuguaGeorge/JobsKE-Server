@@ -7,6 +7,7 @@ urlpatterns = [
     path('register', views.register, name=('register')),
     path('profile', views.create_profile, name=('profile')),
     path('login', views.TokenView.as_view()),
+    path('org', views.org_profile, name=('org')),
 ]
 
 if settings.DEBUG:
