@@ -34,3 +34,15 @@ class User_Profile_creation(models.Model):
 
     def __str__(self) -> str:
         return self.user_profile.username
+
+class Org_Profile_Creation(models.Model):
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    firstname = models.CharField(max_length=100)
+    lastname = models.CharField(max_length=100)
+    contact = models.IntegerField()
+    orgname = models.CharField(max_length=100)
+    location = models.CharField(max_length=100)
+    description = models.TextField()
+
+    def __str__(self) -> str:
+        return self.user_profile.username
