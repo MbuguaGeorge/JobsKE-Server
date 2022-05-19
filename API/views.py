@@ -1,11 +1,12 @@
 from rest_framework.serializers import Serializer
 from django.contrib.auth import authenticate
-from .serializers import ProfileSerializer, UserProfileCreationSerializer, OrgProfileCreationSerializer
+from .serializers import ProfileSerializer, UserProfileCreationSerializer, OrgProfileCreationSerializer, JobsSerializer, JobPostSerializer
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework import permissions, status
+from rest_framework import permissions, status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+from .models import Org_Profile_Creation
 
 # Create your views here.
 @api_view(['POST',])
@@ -81,3 +82,28 @@ def org_profile(request):
         else:
             data = serializer.errors
         return Response(serializer.data)
+
+@api_view(['POST',])
+@permission_classes((permissions.AllowAny,))
+def jobpost(request):
+    if request.method == 'POST':
+        serializer = JobPostSerializer(data=request.data)
+        data = {}
+
+        if serializer.is_valid():
+            job = serializer.save()
+            data['response'] = 'success'
+            data['type'] = job.type
+            data['location'] = job.location
+            data['category'] = job.category
+            data['description'] = job.description
+        else:
+            data = serializer.errors
+        return Response(data)
+
+class Organizations(generics.ListAPIView):
+    lookup_field = 'pk'
+    serializer_class = JobsSerializer
+
+    def get_queryset(self):
+        return Org_Profile_Creation.objects.all()

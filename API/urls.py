@@ -8,6 +8,8 @@ urlpatterns = [
     path('profile', views.create_profile, name=('profile')),
     path('login', views.TokenView.as_view()),
     path('org', views.org_profile, name=('org')),
+    path('post', views.jobpost, name=('post')),
+    path('organizations', views.Organizations.as_view()),
 ]
 
 if settings.DEBUG:

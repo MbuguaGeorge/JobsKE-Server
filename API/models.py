@@ -56,11 +56,10 @@ class Org_Profile_Creation(models.Model):
         return self.orgname
 
 class JobPost(models.Model):
-    orgname = models.ForeignKey(Org_Profile_Creation, on_delete = models.CASCADE)
     type = models.CharField(choices=JOBTYPE, default="FT", max_length=100)
     location = models.CharField(max_length=100)
     category = models.CharField(choices=OPTIONS, default="WEB", max_length=100)
     description = models.TextField()
 
     def __str__(self) -> str:
-        return self.orgname
+        return self.type

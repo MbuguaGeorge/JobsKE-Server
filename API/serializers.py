@@ -1,5 +1,6 @@
+from pyexpat import model
 from rest_framework import serializers
-from .models import UserProfile, User_Profile_creation, Org_Profile_Creation
+from .models import UserProfile, User_Profile_creation, Org_Profile_Creation, JobPost
 
 class ProfileSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
@@ -65,3 +66,24 @@ class OrgProfileCreationSerializer(serializers.ModelSerializer):
 
         org.save()
         return org
+
+class JobPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobPost
+        fields = ('type', 'location', 'category', 'description')
+
+    def save(self):
+        job = JobPost(
+            type = self.validated_data['type'],
+            location = self.validated_data['location'],
+            category = self.validated_data['category'],
+            description = self.validated_data['description']
+        )
+
+        job.save()
+        return job
+
+class JobsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Org_Profile_Creation
+        fields = ('user_profile', 'firstname', 'lastname', 'contact', 'orgname', 'description', 'location')
