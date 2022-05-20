@@ -6,15 +6,15 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 OPTIONS = [
-    ("WEB", "Website & Software"),
-    ("UI", "UI/UX")
+    ("Website & Software", "Website & Software"),
+    ("UI/UX", "UI/UX")
 ]
 
 JOBTYPE = [
-    ("FT", "Full Time"),
-    ("PT", "Part Time"),
-    ("INTERN", "Internship"),
-    ("FREELANCE", "Freelance")
+    ("Full Time", "Full Time"),
+    ("Part Time", "Part Time"),
+    ("Internship", "Internship"),
+    ("Freelance", "Freelance")
 ]
 
 class UserProfile(AbstractUser):
@@ -37,7 +37,7 @@ class User_Profile_creation(models.Model):
     profile = models.ImageField()
     description = models.TextField()
     contact = models.IntegerField()
-    category = models.CharField(choices=OPTIONS, default="WEB",max_length=100)
+    category = models.CharField(choices=OPTIONS, default="Website & Software",max_length=100)
     resume = models.FileField(null=True)
 
     def __str__(self) -> str:
@@ -48,7 +48,7 @@ class Org_Profile_Creation(models.Model):
     firstname = models.CharField(max_length=100)
     lastname = models.CharField(max_length=100)
     contact = models.IntegerField()
-    orgname = models.CharField(max_length=100)
+    orgname = models.CharField(max_length=100, unique=True)
     location = models.CharField(max_length=100)
     description = models.TextField()
 
@@ -56,10 +56,13 @@ class Org_Profile_Creation(models.Model):
         return self.orgname
 
 class JobPost(models.Model):
-    type = models.CharField(choices=JOBTYPE, default="FT", max_length=100)
+    title = models.CharField(max_length=100, null=True)
+    type = models.CharField(choices=JOBTYPE, default="Full Time", max_length=100)
     location = models.CharField(max_length=100)
-    category = models.CharField(choices=OPTIONS, default="WEB", max_length=100)
+    category = models.CharField(choices=OPTIONS, default="Website & Software", max_length=100)
     description = models.TextField()
+    date_created = models.DateTimeField(auto_now_add=True, null=True)
+    organization = models.ForeignKey(Org_Profile_Creation, on_delete=models.CASCADE, null=True)
 
     def __str__(self) -> str:
-        return self.type
+        return self.title

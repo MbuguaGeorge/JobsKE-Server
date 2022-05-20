@@ -1,4 +1,3 @@
-from pyexpat import model
 from rest_framework import serializers
 from .models import UserProfile, User_Profile_creation, Org_Profile_Creation, JobPost
 
@@ -70,14 +69,16 @@ class OrgProfileCreationSerializer(serializers.ModelSerializer):
 class JobPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobPost
-        fields = ('type', 'location', 'category', 'description')
+        fields = ('type', 'location', 'category', 'description', 'title')
 
     def save(self):
         job = JobPost(
             type = self.validated_data['type'],
             location = self.validated_data['location'],
             category = self.validated_data['category'],
-            description = self.validated_data['description']
+            description = self.validated_data['description'],
+            title = self.validated_data['title'],
+            #organization = self.validated_data['organization']
         )
 
         job.save()
@@ -85,5 +86,5 @@ class JobPostSerializer(serializers.ModelSerializer):
 
 class JobsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Org_Profile_Creation
-        fields = ('user_profile', 'firstname', 'lastname', 'contact', 'orgname', 'description', 'location')
+        model = JobPost
+        fields = ('type', 'location', 'category', 'description', 'title', 'organization')
