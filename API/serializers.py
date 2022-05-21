@@ -69,7 +69,7 @@ class OrgProfileCreationSerializer(serializers.ModelSerializer):
 class JobPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobPost
-        fields = ('type', 'location', 'category', 'description', 'title')
+        fields = ('type', 'location', 'category', 'description', 'title', 'organization')
 
     def save(self):
         job = JobPost(
@@ -77,8 +77,7 @@ class JobPostSerializer(serializers.ModelSerializer):
             location = self.validated_data['location'],
             category = self.validated_data['category'],
             description = self.validated_data['description'],
-            title = self.validated_data['title'],
-            #organization = self.validated_data['organization']
+            title = self.validated_data['title']
         )
 
         job.save()

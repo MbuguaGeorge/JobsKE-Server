@@ -6,7 +6,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from .models import Org_Profile_Creation, JobPost
-from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -89,28 +88,31 @@ def org_profile(request):
 @permission_classes((IsAuthenticated,))
 def jobpost(request):
     if request.user.is_authenticated:
-        cur_org = get_object_or_404(Org_Profile_Creation, user_profile=request.user)
-        org = cur_org.orgname
+        cur_org = Org_Profile_Creation.objects.get(user_profile=request.user)
         if request.method == 'POST':
             serializer = JobPostSerializer(data=request.data)
             data = {}
 
             if serializer.is_valid():
                 job = serializer.save()
+                job.organization = cur_org
+                job.save()
                 data['response'] = 'success'
                 data['type'] = job.type
                 data['location'] = job.location
                 data['category'] = job.category
                 data['description'] = job.description
                 data['title'] = job.title
-                data['organization'] = org
             else:
                 data = serializer.errors
             return Response(data)
 
-class Organizations(generics.ListAPIView):
+class Jobs(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
     lookup_field = 'pk'
     serializer_class = JobsSerializer
 
     def get_queryset(self):
-        return JobPost.objects.all()
+        cur_org = Org_Profile_Creation.objects.get(user_profile=self.request.user)
+        cur_org_job = JobPost.objects.filter(organization=cur_org)
+        return cur_org_job
