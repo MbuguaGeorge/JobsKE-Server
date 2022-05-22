@@ -1,11 +1,11 @@
 from django.contrib.auth import authenticate
-from .serializers import ProfileSerializer, UserProfileCreationSerializer, OrgProfileCreationSerializer, JobsSerializer, JobPostSerializer
+from .serializers import ProfileSerializer, UserProfileCreationSerializer, OrgProfileCreationSerializer, JobsSerializer, JobPostSerializer, UserProfileSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions, status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from .models import Org_Profile_Creation, JobPost
+from .models import Org_Profile_Creation, JobPost, User_Profile_creation
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -105,14 +105,31 @@ def jobpost(request):
                 data['title'] = job.title
             else:
                 data = serializer.errors
-            return Response(data)
+            return Response(data)           
 
-class Jobs(generics.ListAPIView):
-    permission_classes = [IsAuthenticated]
+class Jobs(generics.ListAPIView):   #class view to list jobs posted by a particular organization 
+    permission_classes = [IsAuthenticated]  
     lookup_field = 'pk'
     serializer_class = JobsSerializer
 
     def get_queryset(self):
-        cur_org = Org_Profile_Creation.objects.get(user_profile=self.request.user)
-        cur_org_job = JobPost.objects.filter(organization=cur_org)
+        cur_org = Org_Profile_Creation.objects.get(user_profile=self.request.user)  #get current organization based on the logged in user
+        cur_org_job = JobPost.objects.filter(organization=cur_org)  #filter the jobs of the logged in organization
         return cur_org_job
+
+class JobsView(generics.ListAPIView):
+    permission_classes = [permissions.AllowAny]
+    lookup_field = 'pk'
+    serializer_class = JobsSerializer
+
+    def get_queryset(self):
+        return JobPost.objects.all()
+
+class UserProfileView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'pk'
+    serializer_class = UserProfileSerializer
+
+    def get_queryset(self):
+        cur_user = User_Profile_creation.objects.filter(user_profile = self.request.user)
+        return cur_user

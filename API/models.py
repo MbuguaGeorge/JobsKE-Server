@@ -34,6 +34,7 @@ class User_Profile_creation(models.Model):
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     firstname = models.CharField(max_length=100)
     lastname = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, null=True)
     profile = models.ImageField()
     description = models.TextField()
     contact = models.IntegerField()

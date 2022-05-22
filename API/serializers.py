@@ -87,3 +87,8 @@ class JobsSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobPost
         fields = ('type', 'location', 'category', 'description', 'title', 'organization')
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User_Profile_creation
+        fields = ('user_profile','firstname','lastname','profile','description','resume')
