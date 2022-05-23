@@ -133,3 +133,13 @@ class UserProfileView(generics.ListAPIView):
     def get_queryset(self):
         cur_user = User_Profile_creation.objects.filter(user_profile = self.request.user)
         return cur_user
+
+class JobPosts(generics.ListAPIView):
+    permission_classes = [permissions.AllowAny]
+    lookup_field = 'pk'
+    serializer_class = JobsSerializer
+
+    def get(self, request, pk):
+        post = JobPost.objects.filter(pk=pk).first()
+        serializer = JobsSerializer(post)
+        return Response(serializer.data)

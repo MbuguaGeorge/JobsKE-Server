@@ -63,7 +63,11 @@ class JobPost(models.Model):
     category = models.CharField(choices=OPTIONS, default="Website & Software", max_length=100)
     description = models.TextField()
     date_created = models.DateTimeField(auto_now_add=True, null=True)
+    created_on = models.DateField(auto_now_add=True, null=True)
     organization = models.ForeignKey(Org_Profile_Creation, on_delete=models.CASCADE, null=True)
+
+    class Meta:
+        ordering = ['-date_created']
 
     def __str__(self) -> str:
         return self.title
