@@ -1,5 +1,4 @@
-from lib2to3.pgen2.token import OP
-from unicodedata import category
+from django.utils.text import slugify
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -57,13 +56,14 @@ class Org_Profile_Creation(models.Model):
         return self.orgname
 
 class JobPost(models.Model):
-    title = models.CharField(max_length=100, null=True)
+    slug = models.SlugField(max_length=255, unique=True, null=True)
+    title = models.CharField(max_length=100)
     type = models.CharField(choices=JOBTYPE, default="Full Time", max_length=100)
     location = models.CharField(max_length=100)
     category = models.CharField(choices=OPTIONS, default="Website & Software", max_length=100)
     description = models.TextField()
-    date_created = models.DateTimeField(auto_now_add=True, null=True)
-    created_on = models.DateField(auto_now_add=True, null=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    created_on = models.DateField(auto_now_add=True)
     organization = models.ForeignKey(Org_Profile_Creation, on_delete=models.CASCADE, null=True)
 
     class Meta:
@@ -71,3 +71,7 @@ class JobPost(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(JobPost, self).save(*args, **kwargs)

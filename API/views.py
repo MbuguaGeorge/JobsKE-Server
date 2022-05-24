@@ -107,14 +107,17 @@ def jobpost(request):
                 data = serializer.errors
             return Response(data)           
 
-class Jobs(generics.ListAPIView):   #class view to list jobs posted by a particular organization 
+#class view to list jobs posted by a particular organization 
+class Jobs(generics.ListAPIView):
     permission_classes = [IsAuthenticated]  
     lookup_field = 'pk'
     serializer_class = JobsSerializer
 
     def get_queryset(self):
-        cur_org = Org_Profile_Creation.objects.get(user_profile=self.request.user)  #get current organization based on the logged in user
-        cur_org_job = JobPost.objects.filter(organization=cur_org)  #filter the jobs of the logged in organization
+        #get current organization based on the logged in user
+        cur_org = Org_Profile_Creation.objects.get(user_profile=self.request.user)
+        #filter the jobs of the logged in organization
+        cur_org_job = JobPost.objects.filter(organization=cur_org)
         return cur_org_job
 
 class JobsView(generics.ListAPIView):
@@ -139,7 +142,7 @@ class JobPosts(generics.ListAPIView):
     lookup_field = 'pk'
     serializer_class = JobsSerializer
 
-    def get(self, request, pk):
-        post = JobPost.objects.filter(pk=pk).first()
+    def get(self, request, slug):
+        post = JobPost.objects.filter(slug=slug).first()
         serializer = JobsSerializer(post)
         return Response(serializer.data)

@@ -13,7 +13,7 @@ urlpatterns = [
     path('post', views.jobpost, name=('post')),
     path('jobs', views.Jobs.as_view()),
     path('joblist', views.JobsView.as_view()),
-    path('joblist/<int:pk>/', views.JobPosts.as_view()),
+    path('joblist/<slug:slug>/', views.JobPosts.as_view()),
 
     path('user', views.UserProfileView.as_view()),
 ]
