@@ -16,6 +16,7 @@ urlpatterns = [
     path('joblist/<slug:slug>/', views.JobPosts.as_view()),
 
     path('user', views.UserProfileView.as_view()),
+    path('cur', views.CurUser.as_view()),
 ]
 
 if settings.DEBUG:

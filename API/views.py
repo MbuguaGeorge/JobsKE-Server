@@ -1,11 +1,12 @@
 from django.contrib.auth import authenticate
-from .serializers import ProfileSerializer, UserProfileCreationSerializer, OrgProfileCreationSerializer, JobsSerializer, JobPostSerializer, UserProfileSerializer
+from django.shortcuts import get_object_or_404
+from .serializers import ProfileSerializer, UserProfileCreationSerializer, OrgProfileCreationSerializer, JobsSerializer, JobPostSerializer, UserProfileSerializer, CurUserSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions, status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from .models import Org_Profile_Creation, JobPost, User_Profile_creation
+from .models import Org_Profile_Creation, JobPost, User_Profile_creation, UserProfile
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -47,7 +48,6 @@ def create_profile(request):
     if request.method == 'POST':
         serializer = UserProfileCreationSerializer(data=request.data)
         data= {}
-        
 
         if serializer.is_valid():
             prof = serializer.save()
@@ -122,6 +122,7 @@ class Jobs(generics.ListAPIView):
         cur_org_job = JobPost.objects.filter(organization=cur_org)
         return cur_org_job
 
+#class view to list all jobs
 class JobsView(generics.ListAPIView):
     permission_classes = [permissions.AllowAny]
     lookup_field = 'pk'
@@ -130,6 +131,7 @@ class JobsView(generics.ListAPIView):
     def get_queryset(self):
         return JobPost.objects.all()
 
+#class view to pull the userprofile of the logged in user
 class UserProfileView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     lookup_field = 'pk'
@@ -139,6 +141,7 @@ class UserProfileView(generics.ListAPIView):
         cur_user = User_Profile_creation.objects.filter(user_profile = self.request.user)
         return cur_user
 
+#class view to pull the actual job post based on the slug
 class JobPosts(generics.ListAPIView):
     permission_classes = [permissions.AllowAny]
     lookup_field = 'pk'
@@ -147,4 +150,14 @@ class JobPosts(generics.ListAPIView):
     def get(self, request, slug):
         post = JobPost.objects.filter(slug=slug).first()
         serializer = JobsSerializer(post)
+        return Response(serializer.data)
+
+#class view to pull current logged in user either an organization or a job seeker
+class CurUser(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'pk'
+    #serializer = CurUserSerializer(request.user)
+
+    def get(self, request):
+        serializer = CurUserSerializer(request.user)
         return Response(serializer.data)
