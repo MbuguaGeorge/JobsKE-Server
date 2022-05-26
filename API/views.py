@@ -47,6 +47,7 @@ def create_profile(request):
     if request.method == 'POST':
         serializer = UserProfileCreationSerializer(data=request.data)
         data= {}
+        
 
         if serializer.is_valid():
             prof = serializer.save()
@@ -59,6 +60,7 @@ def create_profile(request):
             data['contact'] = prof.contact
             data['category'] = prof.category
             data['resume'] = prof.resume
+            data['title'] = prof.title
         else:
             data = serializer.errors
         return Response(serializer.data)

@@ -34,7 +34,7 @@ class User_Profile_creation(models.Model):
     firstname = models.CharField(max_length=100)
     lastname = models.CharField(max_length=100)
     title = models.CharField(max_length=100, null=True)
-    profile = models.ImageField()
+    profile = models.ImageField(null=True)
     description = models.TextField()
     contact = models.IntegerField()
     category = models.CharField(choices=OPTIONS, default="Website & Software",max_length=100)

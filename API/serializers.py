@@ -30,7 +30,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 class UserProfileCreationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_Profile_creation
-        fields = ('user_profile','firstname','lastname','profile','description','contact','category','resume')
+        fields = ('user_profile','firstname','lastname','profile','description','contact','category','resume', 'title')
         
     def save(self):
         profile = User_Profile_creation(
@@ -41,7 +41,8 @@ class UserProfileCreationSerializer(serializers.ModelSerializer):
             description = self.validated_data['description'],
             contact = self.validated_data['contact'],
             category = self.validated_data['category'],
-            resume = self.validated_data['resume']
+            resume = self.validated_data['resume'],
+            title = self.validated_data['title']
         )
 
         profile.save()
