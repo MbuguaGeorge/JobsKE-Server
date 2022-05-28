@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
-from .serializers import ProfileSerializer, UserProfileCreationSerializer, OrgProfileCreationSerializer, JobsSerializer, JobPostSerializer, UserProfileSerializer, CurUserSerializer
+from .serializers import ProposalSerializer, ProfileSerializer, UserProfileCreationSerializer, OrgProfileCreationSerializer, JobsSerializer, JobPostSerializer, UserProfileSerializer, CurUserSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions, status, generics
 from rest_framework.views import APIView
@@ -161,3 +161,25 @@ class CurUser(generics.ListAPIView):
     def get(self, request):
         serializer = CurUserSerializer(request.user)
         return Response(serializer.data)
+
+#Function to allow users send proposals to particular jobposts
+@api_view(['POST',])
+@permission_classes((IsAuthenticated,))
+def proposal(request, slug):
+    if request.user.is_authenticated:
+        cur_user = User_Profile_creation.objects.filter(user_profile=request.user)[0]
+        cur_jobpost = JobPost.objects.filter(slug=slug)[0]
+        if request.method == 'POST':
+            serializer = ProposalSerializer(data=request.data)
+            data = {}
+
+            if serializer.is_valid():
+                propos = serializer.save()
+                propos.user = cur_user
+                propos.jobpost = cur_jobpost
+                propos.save()
+                data['response'] = 'success'
+                data['proposal'] = propos.proposal
+            else:
+                data = serializer.errors
+            return Response(data)

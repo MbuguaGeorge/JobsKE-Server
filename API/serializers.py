@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UserProfile, User_Profile_creation, Org_Profile_Creation, JobPost
+from .models import UserProfile, User_Profile_creation, Org_Profile_Creation, JobPost, Proposal
 
 class ProfileSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
@@ -98,3 +98,16 @@ class CurUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ('username', 'email', 'pk')
+
+class ProposalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Proposal
+        fields = ('jobpost', 'proposal', 'user')
+
+    def save(self):
+        proposals = Proposal(
+            proposal = self.validated_data['proposal']
+        )
+
+        proposals.save()
+        return proposals

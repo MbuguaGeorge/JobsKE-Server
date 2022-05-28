@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserProfile, User_Profile_creation, Org_Profile_Creation, JobPost
+from .models import UserProfile, User_Profile_creation, Org_Profile_Creation, JobPost, Proposal
 
 class JobPostAdmin(admin.ModelAdmin):
     search_fields = ['title']
@@ -10,3 +10,4 @@ admin.site.register(UserProfile)
 admin.site.register(User_Profile_creation)
 admin.site.register(Org_Profile_Creation)
 admin.site.register(JobPost, JobPostAdmin)
+admin.site.register(Proposal)

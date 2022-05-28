@@ -75,3 +75,11 @@ class JobPost(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super(JobPost, self).save(*args, **kwargs)
+
+class Proposal(models.Model):
+    jobpost = models.ForeignKey(JobPost, on_delete=models.CASCADE, null=True)
+    proposal = models.TextField()
+    user = models.ForeignKey(User_Profile_creation, on_delete=models.CASCADE, null=True)
+
+    def __int__(self):
+        return self.jobpost
