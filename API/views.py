@@ -1,12 +1,11 @@
 from django.contrib.auth import authenticate
-from django.shortcuts import get_object_or_404
-from .serializers import ProposalSerializer, ProfileSerializer, UserProfileCreationSerializer, OrgProfileCreationSerializer, JobsSerializer, JobPostSerializer, UserProfileSerializer, CurUserSerializer
+from .serializers import ProposalSerializer, ProposalsSentSerializer, ProfileSerializer, UserProfileCreationSerializer, OrgProfileCreationSerializer, JobsSerializer, JobPostSerializer, UserProfileSerializer, CurUserSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import permissions, status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from .models import Org_Profile_Creation, JobPost, User_Profile_creation, UserProfile
+from .models import Org_Profile_Creation, JobPost, Proposal, User_Profile_creation, UserProfile
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -183,3 +182,16 @@ def proposal(request, slug):
             else:
                 data = serializer.errors
             return Response(data)
+
+#class to get the profiles of users who have applied to a given jobpost
+class UserAppliedPost(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'pk'
+    serializer = ProposalsSentSerializer
+
+    def get(self, request, slug):
+        cur_org = Org_Profile_Creation.objects.filter(user_profile=request.user)[0]
+        jobposts = JobPost.objects.filter(organization=cur_org, slug=slug)[0]
+        cur_jobpost = Proposal.objects.filter(jobpost=jobposts)[0]
+        serializer = ProposalsSentSerializer(cur_jobpost)
+        return Response(serializer.data)

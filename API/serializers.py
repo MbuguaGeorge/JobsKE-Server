@@ -92,7 +92,7 @@ class JobsSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_Profile_creation
-        fields = ('user_profile','firstname','lastname','profile','description','resume','title')
+        fields = ('user_profile','firstname','lastname','profile','description','resume','title', 'pk')
 
 class CurUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -111,3 +111,8 @@ class ProposalSerializer(serializers.ModelSerializer):
 
         proposals.save()
         return proposals
+
+class ProposalsSentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Proposal
+        fields = ('jobpost', 'proposal', 'user')

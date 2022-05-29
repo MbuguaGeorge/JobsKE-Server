@@ -15,6 +15,7 @@ urlpatterns = [
     path('joblist', views.JobsView.as_view()),
     path('joblist/<slug:slug>/', views.JobPosts.as_view()),
     path('proposal/<slug:slug>/', views.proposal, name=('proposal')),
+    path('userpost/<slug:slug>/', views.UserAppliedPost.as_view()),
 
     path('user', views.UserProfileView.as_view()),
     path('cur', views.CurUser.as_view()),
