@@ -19,6 +19,7 @@ urlpatterns = [
 
     path('user', views.UserProfileView.as_view()),
     path('cur', views.CurUser.as_view()),
+    path('userprofile/<str:id>/', views.UserView.as_view()),
 ]
 
 if settings.DEBUG:

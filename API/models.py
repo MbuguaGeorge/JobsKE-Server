@@ -34,11 +34,11 @@ class User_Profile_creation(models.Model):
     firstname = models.CharField(max_length=100)
     lastname = models.CharField(max_length=100)
     title = models.CharField(max_length=100, null=True)
-    profile = models.ImageField(null=True)
+    profile = models.ImageField(null=True, unique=True)
     description = models.TextField()
-    contact = models.IntegerField()
+    contact = models.IntegerField(unique=True)
     category = models.CharField(choices=OPTIONS, default="Website & Software",max_length=100)
-    resume = models.FileField(null=True)
+    resume = models.FileField(null=True, unique=True)
 
     def __str__(self) -> str:
         return self.user_profile.username

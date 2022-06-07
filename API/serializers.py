@@ -113,6 +113,7 @@ class ProposalSerializer(serializers.ModelSerializer):
         return proposals
 
 class ProposalsSentSerializer(serializers.ModelSerializer):
+    user = UserProfileSerializer(read_only=True)
     class Meta:
         model = Proposal
-        fields = ('jobpost', 'proposal', 'user')
+        fields = ('user', 'proposal')

@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from .models import Org_Profile_Creation, JobPost, Proposal, User_Profile_creation, UserProfile
 from rest_framework.permissions import IsAuthenticated
-
+from django.http import HttpResponse
 
 # Create your views here.
 @api_view(['POST',])
@@ -190,8 +190,26 @@ class UserAppliedPost(generics.ListAPIView):
     serializer = ProposalsSentSerializer
 
     def get(self, request, slug):
+        res =[]
         cur_org = Org_Profile_Creation.objects.filter(user_profile=request.user)[0]
         jobposts = JobPost.objects.filter(organization=cur_org, slug=slug)[0]
-        cur_jobpost = Proposal.objects.filter(jobpost=jobposts)[0]
-        serializer = ProposalsSentSerializer(cur_jobpost)
-        return Response(serializer.data)
+        cur_jobpost = Proposal.objects.filter(jobpost=jobposts)
+        for jobs in cur_jobpost:
+            serializer = ProposalsSentSerializer(jobs)
+            res.append(serializer.data)
+        return Response(res)
+
+#class to pull the user based on his id
+class UserView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'pk'
+    serializer = UserProfileSerializer
+
+    def get(self, request, id):
+        res = []
+        data = None
+        user = User_Profile_creation.objects.get(pk=id)
+        serializer = UserProfileSerializer(user)
+        data = serializer.data
+        res.append(data)
+        return Response(res)
